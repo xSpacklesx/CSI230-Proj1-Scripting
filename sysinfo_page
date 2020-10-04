@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#File: sysinfo_page
+#Brief: a script to make an HTML page
+#Author: Hunter Spack
+#Assignment: Project 1 Scripting
+#Date: 10/4/2020
+
 # sysinfo_page - a script to make an HTML page
 
 # constants
@@ -7,7 +13,18 @@ TITLE="$HOSTNAME System Info "
 RIGHT_NOW="$(date +"%x %r %Z")"
 TIME_STAMP="Updated on $RIGHT_NOW by $USER"
 
+
 # Functions
+#Brief: checks to make sure usre is root and exits the program if not
+root_check()
+{
+	if [ "$(whoami)" != "root" ]; then
+	echo "Sorry dude, root only"
+	exit
+	fi
+}
+
+#Brief: outputs release, kernel, and ip info
 system_info()
 {
 	echo "<h2>System release info</h2>"
@@ -21,7 +38,7 @@ system_info()
 }
 
 
-
+#brief: outputs system uptime
 show_uptime()
 {
 	 echo "<h2>System uptime</h>"
@@ -30,7 +47,7 @@ show_uptime()
 	echo "</pre>"
 }
 
-
+#Brief: ouputs free spce, disk space, and partitions
 drive_space()
 {
 	echo "<h2>Filesystem spack</h2>"
@@ -41,18 +58,27 @@ drive_space()
 	echo "</pre>"
 }
 
-
+#Brief: home directory size by user
 home_space()
 {
-	echo "<h2>Home directory space by user</h2"
+	echo "<h2>Home directory space by user</h2>"
 	echo "<pre>"
 		echo "Bytes Directory"
 		du -s /home/* | sort -nr
 	echo "</pre>"
 }
 
+#Brief: this grabs the logname and mail location of the user
+name_and_mail()
+{
+	echo "<h2>Logname and mail</h2>"
+	echo "<pre>$LOGNAME</pre>"
+	echo "<pre>$MAIL</pre>"
+}
+
 
 #main
+root_check
 cat <<- _EOF_
     <html>
     <head>
@@ -66,6 +92,7 @@ cat <<- _EOF_
 	$(show_uptime)
 	$(drive_space)
 	$(home_space)
+	$(name_and_mail)
     </body>
     </html>
 _EOF_
